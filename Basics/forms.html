@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>FormDemo</h1>
+    <form action="/dupa">
+        <p>
+            <label for="username">Enter your username</label>
+            <input type="text" placeholder="username" id="username" name="username">
+        </p>
+        <p>
+            <label for="password">Enter your password</label>
+            <input type="password" placeholder="password" id="password" name="password">
+        </p>
+        <p>
+            <label for="color">Eneter you color</label>
+            <input type="color" id="color" name="color">
+        </p>
+        <p>
+            <label for="number">Pick a number</label>
+            <input type="number" id="number" name="number" min="1">
+        </p>
+        <button>Submit</button>
+
+    </form>
+
+    <form action="https://www.reddit.com/search">
+        <input type="text" name="q">
+        <button>Search Reddit</button>
+    </form>
+
+    <h2>More inputs</h2>
+    <form action="">
+        <input type="checkbox" name="agree_tos" id="agree">
+        <label for="agree"> Agree on our terms</label>
+        <p>
+            <label for="xs">XS</label>
+            <input type="radio" name="size" id="xs" value="xs">
+            <label for="s">S</label>
+            <input type="radio" name="size" id="s" value="s">
+            <label for="l">L</label>
+            <input type="radio" name="size" id="l" value="l">
+        </p>
+        <button type="submit">Submit</button>
+    </form>
+    <h2>wybor z listy</h2>
+    <form action="">
+        <label for="pet-select">Choose a pet:</label>
+        <select name="pets" id="pet-select" >
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="hamster">Hamster</option>
+            <option value="parrot">Parrot</option>
+            <option value="spider">Spider</option>
+            <option value="goldfish">Goldfish</option>
+        </select>
+        <button type="submit">sdadsda</button>
+    </form>
+</body>
+
+</html>

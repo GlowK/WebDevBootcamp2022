@@ -1,0 +1,19 @@
+h1  {
+    /* color: aqua; */
+    /* background-color: blue; */
+
+    font-weight: 400;
+    text-decoration: wavy underline #f78120;
+    letter-spacing: 15px;
+    font-size: 80px;
+    text-align: center;
+}
+
+button {
+    color: magenta;
+    background-color: aquamarine;
+}
+
+#number{
+    color:red;
+}
