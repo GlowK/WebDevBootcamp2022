@@ -58,4 +58,5 @@ app.get('*', (req, res) => {
 
 app.listen(8080, () => {
     console.log("LISTENING ON PORT 8080")
+    console.log("localhost:8080")
 })
