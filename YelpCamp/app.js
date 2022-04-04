@@ -6,9 +6,14 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
+const passport = require('passport');
+const passportLocalStrategy = require('passport-local');
+const User = require('./models/user');
 
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews');
+const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+
 const { date } = require('joi');
 
 
@@ -56,11 +61,27 @@ const sessionConfig = {
 app.use(session(sessionConfig))
 
 //***********************
-//flash + Middleware dla flasha
+//Authentication
+//***********************
+app.use(passport.initialize());
+app.use(passport.session()); //musi byc po uzycciu session*
+
+passport.use(new passportLocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//***********************
+//flash + Middleware dla flasha + sprawdzenie zalogowania
 //***********************
 app.use(flash());
 
 app.use((req, res, next) => {
+    // console.log(req.session);
+    // Przekorowywania z miejsca loginu
+    if(!['/login', '/', '/register'].includes(req.originalUrl)){
+        req.session.returnTo = req.originalUrl;
+    }
+    res.locals.currentUser = req.user; // req.user pochodzi z passposta
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
@@ -70,8 +91,9 @@ app.use((req, res, next) => {
 //***********************
 //Routes w innych plikach
 //***********************
-app.use('/campgrounds', campgrounds);
-app.use('/campgrounds/:id/reviews', reviews);
+app.use('/campgrounds', campgroundRoutes);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
+app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello from YelpCamp")
