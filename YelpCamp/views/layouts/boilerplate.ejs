@@ -19,6 +19,7 @@
 
         <!-- Main body -->
         <main class="container mt-3">
+            <%- include('../partials/flash') %>
             <%- body %>
         </main>
 
@@ -29,27 +30,8 @@
                 integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
                 crossorigin="anonymous"></script>
 
-            <script>
-                // From Bootstrap docks -> Sckryp do lepszej wizualnej walidacji po stronie klienta Example starter JavaScript for disabling form submissions if there are invalid fields
-                (function () {
-                    'use strict'
+            <script src="/javasripts/validateForms.js">
 
-                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                    const forms = document.querySelectorAll('.validated-form')
-
-                    // Loop over them and prevent submission
-                    Array.from(forms)
-                        .forEach(function (form) {
-                            form.addEventListener('submit', function (event) {
-                                if (!form.checkValidity()) {
-                                    event.preventDefault()
-                                    event.stopPropagation()
-                                }
-
-                                form.classList.add('was-validated')
-                            }, false)
-                        })
-                })()
             </script>
 
 </body>
