@@ -1,5 +1,9 @@
 const Campground = require('../models/campground');
-const {cloudinary} = require('../cloudinary/index')
+const {cloudinary} = require('../cloudinary/index');
+
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding"); //Mapbox
+const mbxToken = process.env.MAPBOX_TOKEN; //Mapbox
+const geocoder = mbxGeocoding({accessToken: mbxToken }) //Mapbox
 
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -11,16 +15,24 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createNewCampground = async (req, res) => {
+    //Mapbox
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
+    // console.log(geoData.body.features[0].geometry.coordinates);
+    // res.send('OK');
     // if(!req.body.campground) throw new ExpressError("Niepoprwane informacje", 400)
-    const campground = new Campground(req.body.campground);
+        const campground = new Campground(req.body.campground);
+        campground.geometry = geoData.body.features[0].geometry;
     // poprzez dodanie wczesniejszego middleware upload mamy dostep do req.files
     // teraz mozemy wyciagnac z niego informacje na temat wrzuconych zdjec
-    campground.images = req.files.map(file => ({url: file.path, filename: file.filename}));
-    campground.author = req.user._id; //req.user jest automatycznie dokladane przez passporta
-    await campground.save();
-    // console.log(campground);
-    req.flash('success', 'Sucessfuly made a new campground');
-    res.redirect(`/campgrounds/${campground._id}`);
+        campground.images = req.files.map(file => ({url: file.path, filename: file.filename}));
+        campground.author = req.user._id; //req.user jest automatycznie dokladane przez passporta
+        await campground.save();
+    console.log(campground);
+        req.flash('success', 'Sucessfuly made a new campground');
+        res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.showCampground = async (req, res) => { //wycialem isLoggedIn tymczasowo

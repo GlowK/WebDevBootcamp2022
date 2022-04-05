@@ -11,7 +11,7 @@ const ImageSchema = new Schema({
 //Image from cloudinary:
 // https://res.cloudinary.com/kinosokolclaudinary/image/upload/v1649160609/cld-sample.jpg
 
-ImageSchema.virtual('thumbnail').get(function() {
+ImageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200');
 });
 
@@ -33,7 +33,19 @@ const CampgroundSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Review'
         }
-    ]
+    ],
+    //Mapbox
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
+    }
 });
 
 
