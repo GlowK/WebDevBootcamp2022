@@ -2,14 +2,25 @@ const mongoose = require('mongoose');
 const Review = require('./review')
 const Schema = mongoose.Schema;
 
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+});
+
+//virtual schemas https://mongoosejs.com/docs/tutorials/virtuals.html
+//Image from cloudinary:
+// https://res.cloudinary.com/kinosokolclaudinary/image/upload/v1649160609/cld-sample.jpg
+
+ImageSchema.virtual('thumbnail').get(function() {
+    return this.url.replace('/upload', '/upload/w_200');
+});
+
+//https://res.cloudinary.com/kinosokolclaudinary/image/upload/w_200/v1649160609/cld-sample.jpg
+
+
 const CampgroundSchema = new Schema({
     title: String,
-    images: [
-        {
-            url: String,
-            filename: String
-        }
-    ],
+    images: [ImageSchema],
     price: Number,
     description: String,
     location: String,

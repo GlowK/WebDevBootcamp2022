@@ -1,4 +1,5 @@
 const Campground = require('../models/campground');
+const {cloudinary} = require('../cloudinary/index')
 
 module.exports.index = async (req, res) => {
     const campgrounds = await Campground.find({});
@@ -48,9 +49,22 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.editCampground = async (req, res) => {
     const { id } = req.params;
+    // console.log(req.body);
     const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }); //uzycie spreadu doczytac jak to wygladalo
     const imgs = req.files.map(file => ({url: file.path, filename: file.filename}));
     camp.images.push(...imgs); // spread, tablica zapisana wcesniej, rozbijamy na pojedycnze obiekty i pushujemy
+    
+    //kawalek odpowiedzialny za kasowanie obrazkow z wczesniej przeslanej tablicy deleteImages w req.body
+    if(req.body.deleteImages){
+        //Usuwanie lementow z cloudinary
+        for(let filename of req.body.deleteImages){
+            await cloudinary.uploader.destroy(filename);
+        }
+        //uswanie linkow z mongo
+        await camp.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages}}}})
+        // console.log(camp);
+    }
+    
     await camp.save();
     req.flash('success', 'Sucessfuly updated a campground');
     res.redirect(`/campgrounds/${camp._id}`);
