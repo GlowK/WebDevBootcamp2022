@@ -12,8 +12,12 @@ module.exports.renderNewForm = (req, res) => {
 module.exports.createNewCampground = async (req, res) => {
     // if(!req.body.campground) throw new ExpressError("Niepoprwane informacje", 400)
     const campground = new Campground(req.body.campground);
+    // poprzez dodanie wczesniejszego middleware upload mamy dostep do req.files
+    // teraz mozemy wyciagnac z niego informacje na temat wrzuconych zdjec
+    campground.images = req.files.map(file => ({url: file.path, filename: file.filename}));
     campground.author = req.user._id; //req.user jest automatycznie dokladane przez passporta
     await campground.save();
+    // console.log(campground);
     req.flash('success', 'Sucessfuly made a new campground');
     res.redirect(`/campgrounds/${campground._id}`);
 };
@@ -45,6 +49,9 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.editCampground = async (req, res) => {
     const { id } = req.params;
     const camp = await Campground.findByIdAndUpdate(id, { ...req.body.campground }); //uzycie spreadu doczytac jak to wygladalo
+    const imgs = req.files.map(file => ({url: file.path, filename: file.filename}));
+    camp.images.push(...imgs); // spread, tablica zapisana wcesniej, rozbijamy na pojedycnze obiekty i pushujemy
+    await camp.save();
     req.flash('success', 'Sucessfuly updated a campground');
     res.redirect(`/campgrounds/${camp._id}`);
 };

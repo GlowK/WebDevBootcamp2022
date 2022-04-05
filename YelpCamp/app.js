@@ -1,3 +1,11 @@
+//***********************
+//Ustawienie enviroment variables zeby nie byly uploadowane na git
+// ochrona wrazliwych informacji, kont itp
+//***********************
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -13,6 +21,8 @@ const User = require('./models/user');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
+
+
 
 const { date } = require('joi');
 
