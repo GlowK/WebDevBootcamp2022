@@ -4,56 +4,26 @@ const catchAsync = require('../utils/catchAsync');
 // const ExpressError = require('../utils/ExpressError');
 const User = require('../models/user');
 const passport = require('passport');
+const usersController = require('../controllers/users');
 
 
-router.get('/register', (req, res) => {
-    res.render('users/register');
-});
+//***********************
+//Routes (w inny sposob z https://expressjs.com/en/guide/routing.html )
+//***********************
 
-router.post('/register', catchAsync(async (req, res, next) => {
-    try {
-        const { email, username, password } = req.body;
-        const user = new User({ email, username });
-        const registeredUser = await User.register(user, password);
-        req.login(registeredUser, err => {
-            if (err) {
-                return next(err);
-            } else {
-                req.flash('success', `Welcome to yelp camp ${username}`);
-                res.redirect('/campgrounds');
-            }
-        })
-    } catch (e) {
-        req.flash('error', e.message);
-        res.redirect('/register');
-    }
-}));
+router.route('/register')
+    .get(usersController.renderRegisterForm)
+    .post(catchAsync(usersController.registerUser));
 
-router.get('/login', (req, res) => {
-    res.render('users/login');
-})
+router.get('/login', usersController.renderLoginForm);
 
 // ++ middleware z passporta odpowiedzialny za uwiezytelnienie
-router.post('/login', passport.authenticate('local', {
-    failureFlash: true,
-    failureRedirect: '/login'
-}),
-    async (req, res) => {
-        req.flash('success', "welcome back");
-        const redirectUrl = req.session.returnTo || '/campgrounds'
-        delete req.session.returnTo;
-        res.redirect(redirectUrl);
-    })
+router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), usersController.login);
 
-//W przypadku zmiany jezyka bledow sprawdzi: 
-//\node_modules\passport-local-mongoose\index.js
+router.get('/logout', usersController.logout);
 
-
-router.get('/logout', (req, res) => {
-    req.logOut();
-    req.flash('success', "Goodbye")
-    res.redirect('/campgrounds')
-})
-
+//***********************
+//Export
+//***********************
 
 module.exports = router;
