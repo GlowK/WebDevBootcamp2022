@@ -65,7 +65,7 @@ const sessionConfig = {
     cookie: {
         expires: Date.now() + 1000 * 60 * 60 *24 * 7, // Miliseconds * seconds  *  minute * hours * days (i uplywa tydzien lol)
         maxAge: 1000 * 60 * 60 *24 * 7,
-        httpOnly: true
+        httpOnly: true //dostepne tylko na poziomie http, nie sa dostepne dla funkcji JS 
     }
 }
 app.use(session(sessionConfig))
@@ -106,7 +106,7 @@ app.use('/campgrounds/:id/reviews', reviewRoutes);
 app.use('/', userRoutes);
 
 app.get('/', (req, res) => {
-    res.send("Hello from YelpCamp")
+    res.render('home')
 });
 
 //***********************
