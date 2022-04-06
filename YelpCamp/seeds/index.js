@@ -42,7 +42,10 @@ const seedDB = async () => {
             //mapbox
             geometry: {
                 type: 'Point',
-                coordinates: [21.03333, 52.21667]
+                coordinates: [
+                    cities[random1000].longitude,
+                    cities[random1000].latitude,
+                ]
             }
 
         })
